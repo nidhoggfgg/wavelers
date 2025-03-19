@@ -1,4 +1,4 @@
-use waveles::{haar_wavelet_transform, inverse_haar_wavelet_transform};
+use wavelers::{haar_wavelet_transform, inverse_haar_wavelet_transform};
 
 fn main() {
     let signal = vec![1.0, 3.0, 2.0, 0.0, 1.0, 4.0];

@@ -1,5 +1,5 @@
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
-use waveles::{haar_wavelet_transform, inverse_haar_wavelet_transform};
+use wavelers::{haar_wavelet_transform, inverse_haar_wavelet_transform};
 
 fn haar_wavelet_benchmark(c: &mut Criterion) {
     let signal: Vec<f64> = (0..1024).map(|x| x as f64).collect();
