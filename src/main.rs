@@ -1,12 +1,12 @@
-use wavelers::{haar_wavelet_transform, inverse_haar_wavelet_transform};
+use wavelers::{dwt, idwt, wavelet::Haar};
 
 fn main() {
-    let signal = vec![1.0, 3.0, 2.0, 0.0, 1.0, 4.0];
+    let signal = vec![0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
 
-    let (approx, detail) = haar_wavelet_transform(&signal);
+    let (approx, detail) = dwt(&signal, Haar);
     println!("Approximation coefficients: {:?}", approx);
     println!("Detail coefficients: {:?}", detail);
 
-    let reconstructed = inverse_haar_wavelet_transform(&approx, &detail);
+    let reconstructed = idwt(&approx, &detail, Haar);
     println!("Reconstructed signal: {:?}", reconstructed);
 }
