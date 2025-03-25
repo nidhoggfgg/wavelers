@@ -1,4 +1,4 @@
-use wavelers::{dwt2, wavelet::Haar};
+use wavelers::{dwt2, idwt2, wavelet::Haar};
 
 fn main() {
     let data = vec![
@@ -12,4 +12,8 @@ fn main() {
     println!("LH: {:?}", lh);
     println!("HL: {:?}", hl);
     println!("HH: {:?}", hh);
+
+    let r = idwt2(&ll, &lh, &hl, &hh, size, Haar);
+
+    println!("idwt2 result: {:?}", r);
 }
