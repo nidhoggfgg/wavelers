@@ -68,37 +68,44 @@ where
     let half_cols = cols / 2;
 
     let mut col_transformed = vec![0.0; rows * cols];
+    let mut row_transformed = vec![0.0; rows * cols];
+    let mut data = vec![0.0; rows * cols];
+
+    // Combine subbands into column-major order
     for i in 0..half_rows {
         for j in 0..half_cols {
-            col_transformed[i * cols + j] = ll[i * half_cols + j];
-            col_transformed[i * cols + (j + half_cols)] = lh[i * half_cols + j];
-            col_transformed[(i + half_rows) * cols + j] = hl[i * half_cols + j];
-            col_transformed[(i + half_rows) * cols + (j + half_cols)] = hh[i * half_cols + j];
+            let idx = i * half_cols + j;
+            col_transformed[i * cols + j] = ll[idx];
+            col_transformed[i * cols + j + half_cols] = lh[idx];
+            col_transformed[(i + half_rows) * cols + j] = hl[idx];
+            col_transformed[(i + half_rows) * cols + j + half_cols] = hh[idx];
         }
     }
 
-    let mut row_transformed = vec![0.0; rows * cols];
+    let mut column_buffer = vec![0.0; rows];
     for j in 0..cols {
-        let mut column = vec![0.0; rows];
         for i in 0..rows {
-            column[i] = col_transformed[i * cols + j];
+            column_buffer[i] = col_transformed[i * cols + j];
         }
-        let approx = &column[0..rows / 2];
-        let detail = &column[rows / 2..rows];
-        let reconstructed_column = wavelet.inverse_transform(approx, detail);
+
+        let (approx, detail) = column_buffer.split_at(half_rows);
+        let reconstructed = wavelet.inverse_transform(approx, detail);
+
         for i in 0..rows {
-            row_transformed[i * cols + j] = reconstructed_column[i];
+            row_transformed[i * cols + j] = reconstructed[i];
         }
     }
 
-    let mut data = vec![0.0; rows * cols];
+    let mut row_buffer = vec![0.0; cols];
     for i in 0..rows {
         let row_start = i * cols;
-        let row_end = row_start + cols;
-        let approx = &row_transformed[row_start..row_start + cols / 2];
-        let detail = &row_transformed[row_start + cols / 2..row_end];
-        let reconstructed_row = wavelet.inverse_transform(approx, detail);
-        data[row_start..row_end].copy_from_slice(&reconstructed_row);
+
+        row_buffer.copy_from_slice(&row_transformed[row_start..row_start + cols]);
+
+        let (approx, detail) = row_buffer.split_at(half_cols);
+        let reconstructed = wavelet.inverse_transform(approx, detail);
+
+        data[row_start..row_start + cols].copy_from_slice(&reconstructed);
     }
 
     data

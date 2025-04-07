@@ -27,10 +27,10 @@ fn haar_wavelet_benchmark_2d(c: &mut Criterion) {
 }
 
 fn inverse_haar_wavelet_benchmark_2d(c: &mut Criterion) {
-    let ll: Vec<f64> = (0..512).map(|x| x as f64).collect();
-    let lh: Vec<f64> = (0..512).map(|x| x as f64).collect();
-    let hl: Vec<f64> = (0..512).map(|x| x as f64).collect();
-    let hh: Vec<f64> = (0..512).map(|x| x as f64).collect();
+    let ll: Vec<f64> = (0..512 * 512).map(|x| x as f64).collect();
+    let lh: Vec<f64> = (0..512 * 512).map(|x| x as f64).collect();
+    let hl: Vec<f64> = (0..512 * 512).map(|x| x as f64).collect();
+    let hh: Vec<f64> = (0..512 * 512).map(|x| x as f64).collect();
 
     c.bench_function("inverse_haar_wavelet_transform_2d", |b| {
         b.iter(|| {
