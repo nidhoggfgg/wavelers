@@ -68,10 +68,6 @@ where
     let half_cols = cols / 2;
 
     let mut col_transformed = vec![0.0; rows * cols];
-    let mut row_transformed = vec![0.0; rows * cols];
-    let mut data = vec![0.0; rows * cols];
-
-    // Combine subbands into column-major order
     for i in 0..half_rows {
         for j in 0..half_cols {
             let idx = i * half_cols + j;
@@ -82,31 +78,40 @@ where
         }
     }
 
-    let mut column_buffer = vec![0.0; rows];
-    for j in 0..cols {
-        for i in 0..rows {
-            column_buffer[i] = col_transformed[i * cols + j];
-        }
+    let mut transposed_col = vec![0.0; rows * cols];
+    transpose(&col_transformed, &mut transposed_col, rows, cols);
 
-        let (approx, detail) = column_buffer.split_at(half_rows);
+    let mut transposed_col_processed = vec![0.0; rows * cols];
+    for i in 0..cols {
+        let start = i * rows;
+        let (approx, detail) = transposed_col[start..start + rows].split_at(half_rows);
         let reconstructed = wavelet.inverse_transform(approx, detail);
-
-        for i in 0..rows {
-            row_transformed[i * cols + j] = reconstructed[i];
-        }
+        transposed_col_processed[start..start + rows].copy_from_slice(&reconstructed);
     }
 
-    let mut row_buffer = vec![0.0; cols];
+    let mut row_transformed = vec![0.0; rows * cols];
+    transpose(&transposed_col_processed, &mut row_transformed, cols, rows);
+
+    let mut data = vec![0.0; rows * cols];
     for i in 0..rows {
         let row_start = i * cols;
-
-        row_buffer.copy_from_slice(&row_transformed[row_start..row_start + cols]);
-
-        let (approx, detail) = row_buffer.split_at(half_cols);
+        let (approx, detail) = row_transformed[row_start..row_start + cols].split_at(half_cols);
         let reconstructed = wavelet.inverse_transform(approx, detail);
-
         data[row_start..row_start + cols].copy_from_slice(&reconstructed);
     }
 
     data
+}
+
+fn transpose(input: &[f64], output: &mut [f64], rows: usize, cols: usize) {
+    let block_size = 16;
+    for row_chunk in (0..rows).step_by(block_size) {
+        for col_chunk in (0..cols).step_by(block_size) {
+            for row in row_chunk..(row_chunk + block_size).min(rows) {
+                for col in col_chunk..(col_chunk + block_size).min(cols) {
+                    output[col * rows + row] = input[row * cols + col];
+                }
+            }
+        }
+    }
 }
