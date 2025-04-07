@@ -1,7 +1,14 @@
 [package]
 name = "wavelers"
-version = "0.0.1"
+version = "0.1.0"
 edition = "2024"
+license = "MIT"
+authors = ["nidhoggfgg <nidhoggfgg@gmail.com>"]
+description = "dwt for rust"
+keywords = ["dwt", "idwt", "math"]
+readme = "README.md"
+repository = "https://github.com/nidhoggfgg/wavelers"
+exclude = []
 
 [dependencies]
 
