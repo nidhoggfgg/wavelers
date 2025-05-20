@@ -8,7 +8,7 @@ description = "dwt for rust"
 keywords = ["dwt", "idwt", "math"]
 readme = "README.md"
 repository = "https://github.com/nidhoggfgg/wavelers"
-exclude = []
+exclude = ["examples"]
 
 [dependencies]
 

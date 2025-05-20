@@ -22,7 +22,7 @@ fn haar_wavelet_benchmark_2d(c: &mut Criterion) {
     let signal: Vec<f64> = (0..1024 * 1024).map(|x| x as f64).collect();
 
     c.bench_function("haar_wavelet_transform_2d", |b| {
-        b.iter(|| dwt2(black_box(&signal), (10, 10), Haar))
+        b.iter(|| dwt2(black_box(&signal), (1024, 1024), Haar))
     });
 }
 
