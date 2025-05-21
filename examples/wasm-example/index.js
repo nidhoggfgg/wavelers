@@ -39,8 +39,10 @@ function main() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        const width = 2 * Math.floor(img.width / 2);
-        const height = 2 * Math.floor(img.height / 2);
+        const width = Math.pow(2, Math.floor(Math.log2(img.width)));
+        const height = Math.pow(2, Math.floor(Math.log2(img.height)));
+        const halfWidth = width >> 1;
+        const halfHeight = height >> 1;
 
         canvas.width = width;
         canvas.height = height;
@@ -57,8 +59,6 @@ function main() {
 
         displayImage('originalCanvas', grayscale, width, height);
 
-        const halfWidth = width >> 1;
-        const halfHeight = height >> 1;
         let ll = new Float64Array(halfWidth * halfHeight);
         let lh = new Float64Array(halfWidth * halfHeight);
         let hl = new Float64Array(halfWidth * halfHeight);
