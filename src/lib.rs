@@ -1,5 +1,6 @@
 mod dwt;
 mod dwt2;
+pub mod padding;
 pub mod wavelet;
 
 pub use dwt::dwt;
